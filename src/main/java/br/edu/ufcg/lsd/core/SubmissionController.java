@@ -1,49 +1,76 @@
 package br.edu.ufcg.lsd.core;
 
 import java.util.List;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.edu.ufcg.lsd.core.models.MessageComponent;
-import br.edu.ufcg.lsd.core.utils.ProbeConstants.Properties;
+import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
+import eu.atmosphere.tmaf.monitor.message.Data.Type;
 import eu.atmosphere.tmaf.monitor.message.Message;
 import eu.atmosphere.tmaf.monitor.message.Observation;
 
-// TODO implements. This is the default example (probe-demo)
+// TODO implement. This is the default example of (probe-demo)
+// TODO implement test too
 public class SubmissionController {
 
-	@SuppressWarnings("unused")
-	private Properties properties;
+	private static final Logger LOGGER = LoggerFactory.getLogger(SubmissionController.class);
+	
+	private String monitorUrl;
+	private Integer probeId;
+	private String probePassword;
 	
 	public SubmissionController(Properties properties) {
-		this.properties = properties;
+		this.monitorUrl = properties.getProperty(ProbeConstants.Properties.MONITOR_URL);
+		// TODO check if is an integer
+		this.probeId = Integer.valueOf(properties.getProperty(ProbeConstants.Properties.PROBE_ID));
+		this.probePassword = properties.getProperty(ProbeConstants.Properties.PROBE_PASSWORD);
 	}
 	
-	public void sendToTMA(List<MessageComponent> messages) {
+	public void sendToTMA(List<MessageComponent> messagesComponent) throws Exception {
 
-		BackgroundClient client = new BackgroundClient("http://127.0.0.1:5000/monitor");
+		BackgroundClient client = new BackgroundClient(this.monitorUrl);
 
-		int probeId = 0; // get in properties
-		String password = ""; // get in properties
-		client.authenticate(probeId, password.getBytes());
-
-		Message message;
-
+		boolean authenticated = client.authenticate(this.probeId, this.probePassword.getBytes());
+		if (!authenticated) {
+			// TODO
+			throw new Exception("");
+		}
+		
 		boolean start = client.start();
+		if (!start) {
+			// TODO
+			throw new Exception("");			
+		}
 
-		for (int i = 0; i < 10; i++) {
-			message = client.createMessage();
-			message.setResourceId(101098);
-
-			message.addData(new Data(Data.Type.EVENT, i, new Observation(100000 + i, 10000.00001 + i)));
-
-			client.send(message);
+		for (MessageComponent messageComponent : messagesComponent) {
+			Message message = client.createMessage();
+			
+			message.setResourceId(messageComponent.getResourceId().getValue());
+			
+			Type type = messageComponent.getType();
+			long time = messageComponent.getTimestamp();
+			double value = messageComponent.getValue();
+			int descriptionId = 0; // TODO check
+			
+			message.addData(new Data(type, descriptionId, new Observation(time, value)));
+			
+			client.send(message);			
 		}
 
 		try {
-			Thread.sleep(100000);
+			Thread.sleep(100000); // TODO check the reason
 			boolean stop = client.stop();
-		} catch (Exception ex) {} 
+			if (!stop) {
+				// TODO check ! Try again ?
+			}
+		} catch (Exception e) {
+			LOGGER.error("", e);
+		} 
 
 		client.shutdown();
 	}

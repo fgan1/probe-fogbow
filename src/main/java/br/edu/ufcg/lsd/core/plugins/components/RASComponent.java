@@ -11,13 +11,13 @@ import br.edu.ufcg.lsd.core.models.MessageComponent;
 import br.edu.ufcg.lsd.core.plugins.databases.PrimaryRASDatabase;
 import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase;
 import br.edu.ufcg.lsd.core.utils.DateUtils;
+import eu.atmosphere.tmaf.monitor.message.Data;
 
 public class RASComponent implements Component {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RASComponent.class);
 	
 	private static final int FIRST_QUERY_TIME = -1;
-	private static final String COMMAN = ",";
 	
 	private RASDatabase rasDatabase;
 	private long lastQueryTime = FIRST_QUERY_TIME;
@@ -36,26 +36,18 @@ public class RASComponent implements Component {
 	public List<MessageComponent> getMessages() {
 		int ordersFulfilled = getOrdersFulfilled();
 		int ordersFailed = getOrdersFailed();
-
-		String lastQueryTimeStr = this.lastQueryTime == FIRST_QUERY_TIME ? "-" :  String.valueOf(this.lastQueryTime);
 		long nowQueryTime = DateUtils.currentTimeMillis();
-		String nowQueryTimeStr = String.valueOf(nowQueryTime);
 		
-		List<MessageComponent> messages = new LinkedList<MessageComponent>();
-		StringBuffer sb = new StringBuffer();
-		sb.append(lastQueryTimeStr); 
-		sb.append(COMMAN); 
-		sb.append(nowQueryTimeStr);
-		sb.append(COMMAN);
-		sb.append(String.valueOf(ordersFulfilled));
-		sb.append(COMMAN);
-		sb.append(String.valueOf(ordersFailed));
+		List<MessageComponent> messagesComponent = new LinkedList<MessageComponent>();
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.ResourceMonitor.FULFILLED, Data.Type.MEASUREMENT, nowQueryTime, ordersFulfilled));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.ResourceMonitor.FAILED, Data.Type.MEASUREMENT, nowQueryTime, ordersFailed));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.ResourceMonitor.LAST_MEASUREMENT, Data.Type.EVENT, nowQueryTime, this.lastQueryTime));	
+		this.lastQueryTime = nowQueryTime;				
 		
-		messages.add(new MessageComponent(sb.toString()));
-				
-		this.lastQueryTime = nowQueryTime;
-		
-		return messages;
+		return messagesComponent;
 	}
 	
 	protected int getOrdersFulfilled() {

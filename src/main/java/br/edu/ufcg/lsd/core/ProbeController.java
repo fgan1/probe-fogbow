@@ -64,7 +64,7 @@ public class ProbeController {
 		return schedulerPeriod;
 	}
 	
-	protected void action() {
+	protected void action() throws Exception {
 		List<MessageComponent> messages = this.component.getMessages();
 		this.submissionController.sendToTMA(messages);
 	}

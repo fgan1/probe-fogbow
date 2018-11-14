@@ -12,6 +12,11 @@ public class ProbeConstants {
 		
 		// scheduler
 		public static final String SCHEDULER_PERIOD = "scheduler_period";
+		
+		// monitor ATM
+		public static final String MONITOR_URL = "monitor_url";
+		public static final String PROBE_ID = "probe_id";
+		public static final String PROBE_PASSWORD = "probe_password";
 
 	}
 
