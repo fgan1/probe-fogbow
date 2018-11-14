@@ -18,12 +18,14 @@ public class ProbeController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProbeController.class);
 	
-	private static final int SCHEDULER_TIME_DEFAULT = 5000;
+	protected static final int SCHEDULER_TIME_DEFAULT = 5000;
 	
-	private Properties properties;
 	private Component component;
 	private SubmissionController submissionController;
-	private final ManagerTimer schedulerTimer;
+	private Properties properties;
+	private ManagerTimer schedulerTimer;
+	
+	protected ProbeController() {}
 	
 	public ProbeController(Properties properties) throws Exception {
 		this.properties = properties;
@@ -39,7 +41,7 @@ public class ProbeController {
 			@Override
 			public void run() {
 				try {
-					sendToTMA();
+					action();
 				} catch (Throwable e) {
 					LOGGER.error("Error while sending message to TMA", e);
 				}
@@ -48,12 +50,13 @@ public class ProbeController {
 		}, 0, schedulerPeriod);
 	}
 
-	private long getSchedulerPeriod() {
+	protected long getSchedulerPeriod() {
 		String schedulerPeriodStr = properties.getProperty(ProbeConstants.Properties.SCHEDULER_PERIOD);
 		
 		long schedulerPeriod = SCHEDULER_TIME_DEFAULT;
 		try {
-			schedulerPeriod = schedulerPeriodStr.isBlank() ? Long.parseLong(schedulerPeriodStr) : SCHEDULER_TIME_DEFAULT;			
+			schedulerPeriod = schedulerPeriodStr != null && !schedulerPeriodStr.isBlank() 
+					? Long.parseLong(schedulerPeriodStr) : SCHEDULER_TIME_DEFAULT;			
 		} catch (NumberFormatException e) {
 			LOGGER.warn("The " + ProbeConstants.Properties.SCHEDULER_PERIOD + " is wrong" , e);
 		}
@@ -61,7 +64,7 @@ public class ProbeController {
 		return schedulerPeriod;
 	}
 	
-	protected void sendToTMA() {
+	protected void action() {
 		List<MessageComponent> messages = this.component.getMessages();
 		this.submissionController.sendToTMA(messages);
 	}
@@ -76,5 +79,9 @@ public class ProbeController {
 			throw new Exception(errorMsg);
 		}
 	}	
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
 	
 }

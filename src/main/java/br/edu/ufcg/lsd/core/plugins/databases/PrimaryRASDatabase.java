@@ -19,7 +19,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 	
 	private static final String TOTAL_VARIABLE = "total";
 	private static final String ORDER_TABLE_NAME = "order_table";
-	private static final String ORDER_STATE_NAME = "order_table";
+	private static final String ORDER_STATE_NAME = "order_state";
 	
 	private String databaseURL;
 	private String password;
@@ -78,7 +78,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 		try {
 			Class.forName(databaseDriver);
 		} catch (ClassNotFoundException e) {
-			String errorMsg = String.format("Does not exists the driver releated with: %s", this.databaseURL);
+			String errorMsg = String.format("Does not exists the driver releated with: %s", databaseDriver);
 			LOGGER.error(errorMsg, e);
 			throw new Exception(errorMsg);
 		}
