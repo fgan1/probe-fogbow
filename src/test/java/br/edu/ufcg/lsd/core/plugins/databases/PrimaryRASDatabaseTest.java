@@ -12,15 +12,16 @@ import java.util.Properties;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 
 public class PrimaryRASDatabaseTest {
 
+	private static final int FULFILLED_SIZE = 3;
+	private static final int FAILED_SIZE = 2;
+	// embedded database
 	private final String DBCP2_DRIVER = "org.apache.commons.dbcp2.PoolingDriver";
-
 	private static final String SRC_TEST_RESOURCE_BD_BASE_SQL = "src/test/resource/bd/base.sql";
 	private static final String JDBC_HSQLDB_PASSWORD = "pass";
 	private static final String JDBC_HSQLDB_USERNAME = "sa";
@@ -40,22 +41,30 @@ public class PrimaryRASDatabaseTest {
 	}
 	
 	// test case : Count fulfilled order
-	@Ignore
 	@Test
 	public void testCountFulfilled() {
 		int countOrderFulfilled = this.primaryRASDatabase.getCountOrder(RASDatabase.OrderState.FULFILLED.toString());
 		
 		// verify
-		Assert.assertEquals(3, countOrderFulfilled);
+		Assert.assertEquals(FULFILLED_SIZE, countOrderFulfilled);
 	}
 	
+	// test case : Count failed order
 	@Test
-	@Ignore
 	public void testCountFailed() {
-		int countOrderFulfilled = this.primaryRASDatabase.getCountOrder(RASDatabase.OrderState.FULFILLED.toString());
+		int countOrderFulfilled = this.primaryRASDatabase.getCountOrder(RASDatabase.OrderState.FAILED.toString());
 		
 		// verify
-		Assert.assertEquals(2, countOrderFulfilled);
+		Assert.assertEquals(FAILED_SIZE, countOrderFulfilled);
+	}	
+	
+	// test case : Count unknown state
+	@Test
+	public void testCountUnknownState() {
+		int countOrderFulfilled = this.primaryRASDatabase.getCountOrder("unknown");
+		
+		// verify
+		Assert.assertEquals(0, countOrderFulfilled);
 	}	
 	
 	private void createSchema(final Connection conn) throws SQLException, IOException {

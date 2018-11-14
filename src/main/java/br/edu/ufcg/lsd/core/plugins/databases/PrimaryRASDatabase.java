@@ -45,8 +45,9 @@ public class PrimaryRASDatabase implements RASDatabase {
 			
 			countOrderStmt = connection.prepareStatement(COUNT_ORDER_SQL);
 			countOrderStmt.setString(1, state);
-			ResultSet executeQuery = countOrderStmt.executeQuery();			
-			int total = executeQuery.getInt(TOTAL_VARIABLE);
+			ResultSet executeQuery = countOrderStmt.executeQuery();		
+			executeQuery.next();
+			int total = executeQuery.getInt(1);
 			
 			connection.commit();
 			
@@ -87,7 +88,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 	
 	protected void configureDatabase(Properties properties) throws Exception {
 		this.databaseURL = properties.getProperty(ProbeConstants.Properties.DATABASE_URL);
-		if (this.databaseURL == null || this.databaseURL.isBlank()) {
+		if (this.databaseURL == null || this.databaseURL.isEmpty()) {
 			throw new Exception("Database url is empty. This properties is required.");
 		}
 		LOGGER.debug("DatabaseURL: " + this.databaseURL);

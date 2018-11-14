@@ -55,7 +55,7 @@ public class ProbeController {
 		
 		long schedulerPeriod = SCHEDULER_TIME_DEFAULT;
 		try {
-			schedulerPeriod = schedulerPeriodStr != null && !schedulerPeriodStr.isBlank() 
+			schedulerPeriod = schedulerPeriodStr != null && !schedulerPeriodStr.isEmpty() 
 					? Long.parseLong(schedulerPeriodStr) : SCHEDULER_TIME_DEFAULT;			
 		} catch (NumberFormatException e) {
 			LOGGER.warn("The " + ProbeConstants.Properties.SCHEDULER_PERIOD + " is wrong" , e);
