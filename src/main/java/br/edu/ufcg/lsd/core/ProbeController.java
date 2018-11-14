@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import br.edu.ufcg.lsd.core.models.MessageComponent;
 import br.edu.ufcg.lsd.core.plugins.components.Component;
 import br.edu.ufcg.lsd.core.plugins.components.RASComponent;
-import br.edu.ufcg.lsd.core.utils.DateUtils;
 import br.edu.ufcg.lsd.core.utils.ManagerTimer;
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 

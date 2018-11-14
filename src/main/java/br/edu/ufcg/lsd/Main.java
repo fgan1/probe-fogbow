@@ -26,7 +26,6 @@ public class Main {
     	properties.load(new FileInputStream(propertiesSFile));
     	
 		ProbeController probeController = new ProbeController(properties);
-    	probeController.start();
-    	
+    	probeController.start();    
     }
 }
