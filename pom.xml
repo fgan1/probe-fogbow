@@ -39,6 +39,12 @@
 	    <artifactId>monitor-client</artifactId>
 	    <version>0.1</version>
 	</dependency>
+	<!-- BD -->
+	<dependency>
+	    <groupId>org.postgresql</groupId>
+	    <artifactId>postgresql</artifactId>
+	    <version>9.4.1212</version>
+	</dependency>	
 	<!-- Tests -->
 	<dependency>
 	    <groupId>junit</groupId>

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 
+// TODO incomplete 
 public class PrimaryRASDatabase implements RASDatabase {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrimaryRASDatabase.class);
@@ -36,7 +37,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 													" WHERE " + ORDER_STATE_NAME + " = ?";
 	
 	@Override
-	public int getCountOrder(String state) {
+	public int getCountOrder(String orderTypeTableName, String state) {
 		PreparedStatement countOrderStmt = null;
 		Connection connection = null;
 		try {

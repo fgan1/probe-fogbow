@@ -3,24 +3,23 @@ package br.edu.ufcg.lsd.core.models;
 import eu.atmosphere.tmaf.monitor.message.Data;
 import eu.atmosphere.tmaf.monitor.message.Data.Type;
 
-// FIXME this will change. The probe message probably is not a String
 public class MessageComponent {
 
-	private ResourceMonitor resourceId;
+	private DescriptionMonitor descriptionId;
 	private Data.Type type;
 	private long timestamp;
 	private double value;
 
-	public MessageComponent(ResourceMonitor resourceId, Type type, long timestamp, double value) {
+	public MessageComponent(DescriptionMonitor resourceId, Type type, long timestamp, double value) {
 		super();
-		this.resourceId = resourceId;
+		this.descriptionId = resourceId;
 		this.type = type;
 		this.timestamp = timestamp;
 		this.value = value;
 	}
 	
-	public ResourceMonitor getResourceId() {
-		return resourceId;
+	public DescriptionMonitor getDescriptionId() {
+		return descriptionId;
 	}
 	
 	public Data.Type getType() {
@@ -35,12 +34,18 @@ public class MessageComponent {
 		return value;
 	}
 
-	public enum ResourceMonitor {
-		FULFILLED(0000001), FAILED(0000002), LAST_MEASUREMENT(0000003);
+	public enum DescriptionMonitor {
+		FULFILLED_COMPUTES(0000001), 
+		FAILED_COMPUTES(0000002),
+		FULFILLED_VOLUMES(0000003),
+		FAILED_VOLUMES(0000004),
+		FULFILLED_NETWORKS(0000005),
+		FAILED_NETWORKS(0000005),
+		LAST_MEASUREMENT(0000101); // TODO will be used in the future
 
 		private int value;
 
-		private ResourceMonitor(int value) {
+		private DescriptionMonitor(int value) {
 			this.value = value;
 		}
 

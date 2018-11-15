@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import br.edu.ufcg.lsd.core.models.MessageComponent;
 import br.edu.ufcg.lsd.core.plugins.databases.PrimaryRASDatabase;
 import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase;
+import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderType;
+import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderState;
 import br.edu.ufcg.lsd.core.utils.DateUtils;
 import eu.atmosphere.tmaf.monitor.message.Data;
 
@@ -20,6 +22,8 @@ public class RASComponent implements Component {
 	private static final int FIRST_QUERY_TIME = -1;
 	
 	private RASDatabase rasDatabase;
+	
+	@SuppressWarnings("unused")
 	private long lastQueryTime = FIRST_QUERY_TIME;
 	
 	public RASComponent(Properties properties) throws Exception {
@@ -34,28 +38,38 @@ public class RASComponent implements Component {
 	
 	@Override
 	public List<MessageComponent> getMessages() {
-		int ordersFulfilled = getOrdersFulfilled();
-		int ordersFailed = getOrdersFailed();
+		int computesFulfilled = getOrdersQuant(OrderType.COMPUTE, OrderState.FULFILLED);
+		int computesFailed = getOrdersQuant(OrderType.COMPUTE, OrderState.FULFILLED);
+		int volumesFulfilled = getOrdersQuant(OrderType.VOLUME, OrderState.FULFILLED);
+		int volumesFailed = getOrdersQuant(OrderType.VOLUME, OrderState.FULFILLED);
+		int networksFulfilled = getOrdersQuant(OrderType.NETWORK, OrderState.FULFILLED);
+		int networksFailed = getOrdersQuant(OrderType.NETWORK, OrderState.FULFILLED);		
+		
 		long nowQueryTime = DateUtils.currentTimeMillis();
 		
 		List<MessageComponent> messagesComponent = new LinkedList<MessageComponent>();
 		messagesComponent.add(new MessageComponent(
-				MessageComponent.ResourceMonitor.FULFILLED, Data.Type.MEASUREMENT, nowQueryTime, ordersFulfilled));
+				MessageComponent.DescriptionMonitor.FULFILLED_COMPUTES, Data.Type.MEASUREMENT, nowQueryTime, computesFulfilled));
 		messagesComponent.add(new MessageComponent(
-				MessageComponent.ResourceMonitor.FAILED, Data.Type.MEASUREMENT, nowQueryTime, ordersFailed));
+				MessageComponent.DescriptionMonitor.FAILED_COMPUTES, Data.Type.MEASUREMENT, nowQueryTime, computesFailed));
 		messagesComponent.add(new MessageComponent(
-				MessageComponent.ResourceMonitor.LAST_MEASUREMENT, Data.Type.EVENT, nowQueryTime, this.lastQueryTime));	
-		this.lastQueryTime = nowQueryTime;				
+				MessageComponent.DescriptionMonitor.FULFILLED_VOLUMES, Data.Type.MEASUREMENT, nowQueryTime, volumesFulfilled));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FAILED_VOLUMES, Data.Type.MEASUREMENT, nowQueryTime, volumesFailed));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FULFILLED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFulfilled));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FAILED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFailed));		
+		
+		// TODO will be used in the future
+		this.lastQueryTime = nowQueryTime;		
 		
 		return messagesComponent;
 	}
 	
-	protected int getOrdersFulfilled() {
-		return this.rasDatabase.getCountOrder(RASDatabase.OrderState.FULFILLED.toString());
+	protected int getOrdersQuant(RASDatabase.OrderType type, RASDatabase.OrderState state) {
+		return this.rasDatabase.getCountOrder(type.toString(), state.toString());
 	}
 	
-	protected int getOrdersFailed() {
-		return this.rasDatabase.getCountOrder(RASDatabase.OrderState.FAILED.toString());
-	}	
 
 }

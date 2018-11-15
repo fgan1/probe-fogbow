@@ -1,5 +1,6 @@
 package br.edu.ufcg.lsd.core;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimerTask;
@@ -9,10 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.edu.ufcg.lsd.core.models.MessageComponent;
+import br.edu.ufcg.lsd.core.models.MessageComponent.DescriptionMonitor;
 import br.edu.ufcg.lsd.core.plugins.components.Component;
 import br.edu.ufcg.lsd.core.plugins.components.RASComponent;
+import br.edu.ufcg.lsd.core.plugins.submission.ClientTMASubmissionMonitor;
+import br.edu.ufcg.lsd.core.plugins.submission.SubmissionMonitor;
 import br.edu.ufcg.lsd.core.utils.ManagerTimer;
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
+import eu.atmosphere.tmaf.monitor.message.Data;
 
 public class ProbeController {
 
@@ -21,7 +26,7 @@ public class ProbeController {
 	protected static final int SCHEDULER_TIME_DEFAULT = 5000;
 	
 	private Component component;
-	private SubmissionController submissionController;
+	private SubmissionMonitor submissionMonitor;
 	private Properties properties;
 	private ManagerTimer schedulerTimer;
 	
@@ -32,10 +37,13 @@ public class ProbeController {
 		this.schedulerTimer = new ManagerTimer(Executors.newScheduledThreadPool(1));
 		
 		configureComponent(properties);
+		configureSubmissionMontiro(properties);		
 	}
 	
-	public void start() {
+	public void start() throws Exception {
 		long schedulerPeriod = getSchedulerPeriod();
+		
+		sendInitialEventoToTMA();
 		
 		this.schedulerTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -65,8 +73,8 @@ public class ProbeController {
 	}
 	
 	protected void action() throws Exception {
-		List<MessageComponent> messages = this.component.getMessages();
-		this.submissionController.sendToTMA(messages);
+		List<MessageComponent> messagesComponent = this.component.getMessages();
+		this.submissionMonitor.sendToTMA(messagesComponent);
 	}
 	
 	// TODO implement support to other components
@@ -79,9 +87,32 @@ public class ProbeController {
 			throw new Exception(errorMsg);
 		}
 	}	
+
+	// TODO implement support to other submission monitors
+	protected void configureSubmissionMontiro(Properties properties) throws Exception {
+		try {
+			this.submissionMonitor = new ClientTMASubmissionMonitor(properties);
+		} catch (Exception e) {
+			String errorMsg = "Is not possible initialize the submission monitor";
+			LOGGER.error(errorMsg, e);
+			throw new Exception(errorMsg);
+		}
+	}
 	
-	public void setProperties(Properties properties) {
+	protected void setProperties(Properties properties) {
 		this.properties = properties;
 	}
+	
+	protected void sendInitialEventoToTMA() throws Exception {
+		LOGGER.info("The sending initial evento to TAM");
+		
+		List<MessageComponent> messagesComponent = new LinkedList<MessageComponent>();
+		// TODO in the future it is the time of initialization of the RAS
+		long now = System.currentTimeMillis();
+		messagesComponent.add(new MessageComponent(
+				DescriptionMonitor.FULFILLED_COMPUTES, Data.Type.EVENT, now, now));
+		
+		this.submissionMonitor.sendToTMA(messagesComponent);		
+	}	
 	
 }
