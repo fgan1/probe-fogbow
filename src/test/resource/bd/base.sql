@@ -33,16 +33,16 @@ INSERT INTO order_table (id, order_state) VALUES (3, 'FULFILLED');
 INSERT INTO order_table (id, order_state) VALUES (4, 'FULFILLED');		
 INSERT INTO order_table (id, order_state) VALUES (5, 'FULFILLED');
 INSERT INTO order_table (id, order_state) VALUES (6, 'FULFILLED');
-INSERT INTO order_table (id, order_state) VALUES (7, 'FAILED');
-INSERT INTO order_table (id, order_state) VALUES (8, 'FAILED');
-INSERT INTO order_table (id, order_state) VALUES (9, 'FAILED');
-INSERT INTO order_table (id, order_state) VALUES (10, 'FAILED');
+INSERT INTO order_table (id, order_state) VALUES (7, 'FAILED_AFTER_SUCCESSUL_REQUEST');
+INSERT INTO order_table (id, order_state) VALUES (8, 'FAILED_ON_REQUEST');
+INSERT INTO order_table (id, order_state) VALUES (9, 'FAILED_AFTER_SUCCESSUL_REQUEST');
+INSERT INTO order_table (id, order_state) VALUES (10, 'FAILED_ON_REQUEST');
 
 INSERT INTO order_table (id, order_state) VALUES (11, 'FULFILLED');
 INSERT INTO order_table (id, order_state) VALUES (12, 'FULFILLED');
 
-INSERT INTO order_table (id, order_state) VALUES (13, 'FAILED');
-INSERT INTO order_table (id, order_state) VALUES (14, 'FAILED');
+INSERT INTO order_table (id, order_state) VALUES (13, 'FAILED_ON_REQUEST');
+INSERT INTO order_table (id, order_state) VALUES (14, 'FAILED_ON_REQUEST');
 
 -- computes --
 INSERT INTO compute_order_table (id) VALUES (1);

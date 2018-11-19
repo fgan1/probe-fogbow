@@ -44,7 +44,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 			String countOrderSql = makeCountOrderSql(orderType);
 			LOGGER.trace(String.format("Sql formed: %s", countOrderSql));
 			countOrderStmt = connection.prepareStatement(countOrderSql);
-			countOrderStmt.setString(1, orderState.toString());
+			countOrderStmt.setString(1, orderState.getValue());
 			ResultSet executeQuery = countOrderStmt.executeQuery();		
 			executeQuery.next();
 			int total = executeQuery.getInt(1);
@@ -67,7 +67,7 @@ public class PrimaryRASDatabase implements RASDatabase {
 	
 	
 	protected String makeCountOrderSql(OrderType orderType) {
-		final String COUNT_ORDER_SQL = "SELECT COUNT(*) AS %1s FROM %2s INNER JOIN %3s ON %4s.id = %5s.id WHERE %6s = ?";
+		final String COUNT_ORDER_SQL = "SELECT COUNT(*) AS %1s FROM %2s INNER JOIN %3s ON %4s.id = %5s.id WHERE %6s LIKE ?";
 		String s1 = TOTAL_VARIABLE;
 		String s2 = orderType.getTableName();
 		String s3 = ORDER_TABLE_NAME;

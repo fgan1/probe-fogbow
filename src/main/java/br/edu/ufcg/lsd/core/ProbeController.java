@@ -103,6 +103,7 @@ public class ProbeController {
 		this.properties = properties;
 	}
 	
+	// TODO implement test
 	protected void sendInitialEventoToTMA() throws Exception {
 		LOGGER.info("The sending initial evento to TAM");
 		

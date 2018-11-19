@@ -16,7 +16,7 @@ public class ProbeConstants {
 		// monitor ATM
 		public static final String MONITOR_URL = "monitor_url";
 		public static final String PROBE_ID = "probe_id";
-		public static final String RESOURCE_ID = "resouce_id";
+		public static final String RESOURCE_ID = "resource_id";
 		public static final String PROBE_PASSWORD = "probe_password";
 
 	}

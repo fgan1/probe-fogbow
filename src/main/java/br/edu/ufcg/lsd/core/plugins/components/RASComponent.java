@@ -15,6 +15,7 @@ import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderType;
 import br.edu.ufcg.lsd.core.utils.DateUtils;
 import eu.atmosphere.tmaf.monitor.message.Data;
 
+// TODO implement test
 public class RASComponent implements Component {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RASComponent.class);
@@ -25,6 +26,8 @@ public class RASComponent implements Component {
 	
 	@SuppressWarnings("unused")
 	private long lastQueryTime = FIRST_QUERY_TIME;
+	
+	protected RASComponent() {}
 	
 	public RASComponent(Properties properties) throws Exception {
 		try {
@@ -39,11 +42,15 @@ public class RASComponent implements Component {
 	@Override
 	public List<MessageComponent> getMessages() {
 		int computesFulfilled = getOrdersQuant(OrderType.COMPUTE, OrderState.FULFILLED);
-		int computesFailed = getOrdersQuant(OrderType.COMPUTE, OrderState.FULFILLED);
+		int computesFailed = getOrdersQuant(OrderType.COMPUTE, OrderState.FAILED);
 		int volumesFulfilled = getOrdersQuant(OrderType.VOLUME, OrderState.FULFILLED);
-		int volumesFailed = getOrdersQuant(OrderType.VOLUME, OrderState.FULFILLED);
+		int volumesFailed = getOrdersQuant(OrderType.VOLUME, OrderState.FAILED);
 		int networksFulfilled = getOrdersQuant(OrderType.NETWORK, OrderState.FULFILLED);
-		int networksFailed = getOrdersQuant(OrderType.NETWORK, OrderState.FULFILLED);		
+		int networksFailed = getOrdersQuant(OrderType.NETWORK, OrderState.FAILED);	
+		int attachmentsFulfilled = getOrdersQuant(OrderType.ATTACHMENT, OrderState.FULFILLED);
+		int attachmentsFailed = getOrdersQuant(OrderType.ATTACHMENT, OrderState.FAILED);	
+		int publicIpFulfilled = getOrdersQuant(OrderType.PUBLIC_ID, OrderState.FULFILLED);
+		int publicIpFailed = getOrdersQuant(OrderType.PUBLIC_ID, OrderState.FAILED);
 		
 		long nowQueryTime = DateUtils.currentTimeMillis();
 		
@@ -59,7 +66,15 @@ public class RASComponent implements Component {
 		messagesComponent.add(new MessageComponent(
 				MessageComponent.DescriptionMonitor.FULFILLED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFulfilled));
 		messagesComponent.add(new MessageComponent(
-				MessageComponent.DescriptionMonitor.FAILED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFailed));		
+				MessageComponent.DescriptionMonitor.FAILED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFailed));	
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FULFILLED_ATTACHMENTS, Data.Type.MEASUREMENT, nowQueryTime, attachmentsFulfilled));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FAILED_ATTACHMENTS, Data.Type.MEASUREMENT, nowQueryTime, attachmentsFailed));	
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FULFILLED_PUBLIC_IP, Data.Type.MEASUREMENT, nowQueryTime, publicIpFulfilled));
+		messagesComponent.add(new MessageComponent(
+				MessageComponent.DescriptionMonitor.FAILED_PUBLIC_IP, Data.Type.MEASUREMENT, nowQueryTime, publicIpFailed));			
 		
 		// TODO will be used in the future
 		this.lastQueryTime = nowQueryTime;
@@ -71,5 +86,8 @@ public class RASComponent implements Component {
 		return this.rasDatabase.getCountOrder(orderType, orderState);
 	}
 	
+	protected void setRasDatabase(RASDatabase rasDatabase) {
+		this.rasDatabase = rasDatabase;
+	}
 
 }

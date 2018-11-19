@@ -5,7 +5,19 @@ public interface RASDatabase {
 	int getCountOrder(OrderType orderType, OrderState orderState);
 
 	enum OrderState {
-		FULFILLED, FAILED		
+		FULFILLED("FULFILLED"),
+		// There are two error types(FAILED_AFTER_SUCCESSUL_REQUEST, FAILED_ON_REQUEST)
+		FAILED("FAILED%");
+		
+		private String value;
+		
+		private OrderState(String value) {
+			this.value = value;
+		}
+		
+		public String getValue() {
+			return value;
+		}			
 	}
 	
 	enum OrderType {
