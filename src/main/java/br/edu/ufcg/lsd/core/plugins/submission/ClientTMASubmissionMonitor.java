@@ -1,5 +1,6 @@
 package br.edu.ufcg.lsd.core.plugins.submission;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.edu.ufcg.lsd.core.models.MessageComponent;
+import br.edu.ufcg.lsd.core.models.MessageComponent.DescriptionMonitor;
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
@@ -72,6 +74,8 @@ public class ClientTMASubmissionMonitor implements SubmissionMonitor {
 		}
 
 		try {
+			// TODO understand better
+			Thread.sleep(5000);
 			boolean stop = client.stop();
 			if (!stop) {
 				Thread.sleep(WAIT_TO_TRY_AGAIN);
@@ -97,5 +101,5 @@ public class ClientTMASubmissionMonitor implements SubmissionMonitor {
 			throw new Exception("It is not authenticated");
 		}
 	}	
-	
+
 }
