@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 
-// TODO incomplete 
 public class PrimaryRASDatabase implements RASDatabase {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PrimaryRASDatabase.class);
@@ -32,20 +31,20 @@ public class PrimaryRASDatabase implements RASDatabase {
 		configureDatabase(properties);
 	}
 		
-	private static final String COUNT_ORDER_SQL = "SELECT COUNT(*) AS " + TOTAL_VARIABLE + 
-													" FROM " + ORDER_TABLE_NAME + 
-													" WHERE " + ORDER_STATE_NAME + " = ?";
 	
 	@Override
-	public int getCountOrder(String orderTypeTableName, String state) {
+	public int getCountOrder(OrderType orderType, OrderState orderState) {
+		LOGGER.debug(String.format("Trying to count order type %s by state %s", orderType, orderState));
 		PreparedStatement countOrderStmt = null;
 		Connection connection = null;
 		try {
 			connection = getConnection();
 			connection.setAutoCommit(false);
 			
-			countOrderStmt = connection.prepareStatement(COUNT_ORDER_SQL);
-			countOrderStmt.setString(1, state);
+			String countOrderSql = makeCountOrderSql(orderType);
+			LOGGER.trace(String.format("Sql formed: %s", countOrderSql));
+			countOrderStmt = connection.prepareStatement(countOrderSql);
+			countOrderStmt.setString(1, orderState.toString());
 			ResultSet executeQuery = countOrderStmt.executeQuery();		
 			executeQuery.next();
 			int total = executeQuery.getInt(1);
@@ -64,6 +63,19 @@ public class PrimaryRASDatabase implements RASDatabase {
 			close(countOrderStmt, connection);
 		}
 		return 0;
+	}
+	
+	
+	protected String makeCountOrderSql(OrderType orderType) {
+		final String COUNT_ORDER_SQL = "SELECT COUNT(*) AS %1s FROM %2s INNER JOIN %3s ON %4s.id = %5s.id WHERE %6s = ?";
+		String s1 = TOTAL_VARIABLE;
+		String s2 = orderType.getTableName();
+		String s3 = ORDER_TABLE_NAME;
+		String s4 = ORDER_TABLE_NAME;
+		String s5 = orderType.getTableName();
+		String s6 = ORDER_STATE_NAME;		
+		
+		return String.format(COUNT_ORDER_SQL, s1, s2, s3, s4, s5, s6);
 	}
 	
 	protected Connection getConnection() throws SQLException {

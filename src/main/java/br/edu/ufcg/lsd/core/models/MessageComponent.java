@@ -10,9 +10,9 @@ public class MessageComponent {
 	private long timestamp;
 	private double value;
 
-	public MessageComponent(DescriptionMonitor resourceId, Type type, long timestamp, double value) {
+	public MessageComponent(DescriptionMonitor descriptionMonitorId, Type type, long timestamp, double value) {
 		super();
-		this.descriptionId = resourceId;
+		this.descriptionId = descriptionMonitorId;
 		this.type = type;
 		this.timestamp = timestamp;
 		this.value = value;

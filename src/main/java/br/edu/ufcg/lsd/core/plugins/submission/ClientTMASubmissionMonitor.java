@@ -10,9 +10,9 @@ import br.edu.ufcg.lsd.core.models.MessageComponent;
 import br.edu.ufcg.lsd.core.utils.ProbeConstants;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
+import eu.atmosphere.tmaf.monitor.message.Data.Type;
 import eu.atmosphere.tmaf.monitor.message.Message;
 import eu.atmosphere.tmaf.monitor.message.Observation;
-import eu.atmosphere.tmaf.monitor.message.Data.Type;
 
 public class ClientTMASubmissionMonitor implements SubmissionMonitor {
 
@@ -48,7 +48,7 @@ public class ClientTMASubmissionMonitor implements SubmissionMonitor {
 			LOGGER.info("There are not messages to send");
 			return;
 		}
-		LOGGER.info(String.format("Sending s% message(s) to %s", messagesComponent.size(), this.monitorUrl));
+		LOGGER.info(String.format("Sending %s message(s) to %s", messagesComponent.size(), this.monitorUrl));
 		BackgroundClient client = new BackgroundClient(this.monitorUrl);
 
 		checkAuthentication(client);
@@ -96,6 +96,6 @@ public class ClientTMASubmissionMonitor implements SubmissionMonitor {
 		if (!authenticated) {
 			throw new Exception("It is not authenticated");
 		}
-	}
+	}	
 	
 }

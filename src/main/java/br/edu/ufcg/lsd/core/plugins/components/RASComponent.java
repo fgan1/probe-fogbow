@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import br.edu.ufcg.lsd.core.models.MessageComponent;
 import br.edu.ufcg.lsd.core.plugins.databases.PrimaryRASDatabase;
 import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase;
-import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderType;
 import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderState;
+import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderType;
 import br.edu.ufcg.lsd.core.utils.DateUtils;
 import eu.atmosphere.tmaf.monitor.message.Data;
 
@@ -62,13 +62,13 @@ public class RASComponent implements Component {
 				MessageComponent.DescriptionMonitor.FAILED_NETWORKS, Data.Type.MEASUREMENT, nowQueryTime, networksFailed));		
 		
 		// TODO will be used in the future
-		this.lastQueryTime = nowQueryTime;		
+		this.lastQueryTime = nowQueryTime;
 		
 		return messagesComponent;
 	}
 	
-	protected int getOrdersQuant(RASDatabase.OrderType type, RASDatabase.OrderState state) {
-		return this.rasDatabase.getCountOrder(type.toString(), state.toString());
+	protected int getOrdersQuant(RASDatabase.OrderType orderType, RASDatabase.OrderState orderState) {
+		return this.rasDatabase.getCountOrder(orderType, orderState);
 	}
 	
 
