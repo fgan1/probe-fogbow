@@ -43,7 +43,7 @@ public class ProbeController {
 	public void start() throws Exception {
 		long schedulerPeriod = getSchedulerPeriod();
 		
-		sendInitialEventoToTMA();
+		sendInitialEventoToMonitor();
 		
 		this.schedulerTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -51,7 +51,7 @@ public class ProbeController {
 				try {
 					action();
 				} catch (Throwable e) {
-					LOGGER.error("Error while sending message to TMA", e);
+					LOGGER.error("Error while sending message to TMA Monitor", e);
 				}
 			}
 
@@ -73,11 +73,11 @@ public class ProbeController {
 	}
 	
 	protected void action() throws Exception {
-		List<MessageComponent> messagesComponent = this.component.getMessages();
-		this.submissionMonitor.sendToTMA(messagesComponent);
+		List<MessageComponent> messagesComponent = this.component.getMessagesComponent();
+		this.submissionMonitor.sendToMonitor(messagesComponent);
 	}
 	
-	// TODO implement support to other components
+	// TODO (next release) implement support to other components
 	protected void configureComponent(Properties properties) throws Exception {
 		try {
 			this.component = new RASComponent(properties);
@@ -88,7 +88,7 @@ public class ProbeController {
 		}
 	}	
 
-	// TODO implement support to other submission monitors
+	// TODO (next release) implement support to other submission monitors
 	protected void configureSubmissionMontiro(Properties properties) throws Exception {
 		try {
 			this.submissionMonitor = new ClientTMASubmissionMonitor(properties);
@@ -103,9 +103,8 @@ public class ProbeController {
 		this.properties = properties;
 	}
 	
-	// TODO implement test
-	protected void sendInitialEventoToTMA() throws Exception {
-		LOGGER.info("The sending initial evento to TAM");
+	protected void sendInitialEventoToMonitor() throws Exception {
+		LOGGER.info("The sending initial evento to Monitor");
 		
 		List<MessageComponent> messagesComponent = new LinkedList<MessageComponent>();
 		// TODO in the future it is the time of initialization of the RAS
@@ -113,7 +112,7 @@ public class ProbeController {
 		messagesComponent.add(new MessageComponent(
 				DescriptionMonitor.FULFILLED_COMPUTES, Data.Type.EVENT, now, now));
 		
-		this.submissionMonitor.sendToTMA(messagesComponent);		
+		this.submissionMonitor.sendToMonitor(messagesComponent);		
 	}	
 	
 }

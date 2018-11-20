@@ -15,7 +15,7 @@ import br.edu.ufcg.lsd.core.plugins.databases.RASDatabase.OrderType;
 import br.edu.ufcg.lsd.core.utils.DateUtils;
 import eu.atmosphere.tmaf.monitor.message.Data;
 
-// TODO implement test
+// TODO implement more tests
 public class RASComponent implements Component {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RASComponent.class);
@@ -40,7 +40,7 @@ public class RASComponent implements Component {
 	}
 	
 	@Override
-	public List<MessageComponent> getMessages() {
+	public List<MessageComponent> getMessagesComponent() {
 		int computesFulfilled = getOrdersQuant(OrderType.COMPUTE, OrderState.FULFILLED);
 		int computesFailed = getOrdersQuant(OrderType.COMPUTE, OrderState.FAILED);
 		int volumesFulfilled = getOrdersQuant(OrderType.VOLUME, OrderState.FULFILLED);

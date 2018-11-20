@@ -6,6 +6,6 @@ import br.edu.ufcg.lsd.core.models.MessageComponent;
 
 public interface Component {
 
-	List<MessageComponent> getMessages();
+	List<MessageComponent> getMessagesComponent();
 	
 }

@@ -65,7 +65,7 @@ public class RASComponentTest {
 				Mockito.eq(RASDatabase.OrderType.PUBLIC_ID), Mockito.eq(RASDatabase.OrderState.FAILED));		
 		
 		// exercise
-		List<MessageComponent> messages = this.rasComponent.getMessages();
+		List<MessageComponent> messages = this.rasComponent.getMessagesComponent();
 		
 		// verify
 		Assert.assertTrue(messages.get(0).getValue() == computeFulffield);

@@ -6,6 +6,6 @@ import br.edu.ufcg.lsd.core.models.MessageComponent;
 
 public interface SubmissionMonitor {
 	
-	void sendToTMA(List<MessageComponent> messagesComponent) throws Exception;
+	void sendToMonitor(List<MessageComponent> messagesComponent) throws Exception;
 
 }
